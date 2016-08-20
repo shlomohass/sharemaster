@@ -7,8 +7,66 @@
  *  License: SM proj.
 **************************************************************/
 
-$(function() {
+window["smobj"] = {
+    getExt : function(filename) {
+        return filename.split('.').pop();
+    }
+};
 
+Dropzone.options.shareMasterUpload = {
+    maxFilesize: 0.5, // MB
+    accept: function(file, done) {
+        console.log("validating", smobj.getExt(file.name));
+        if (smobj.getExt(file.name) === "png") {
+            done("Naha, you don't.");
+        } else { done(); }
+    },
+    uploadMultiple: false,
+    parallelUploads: 5,
+    addRemoveLinks: true,
+    dictRemoveFile: 'Remove',
+    dictFileTooBig: 'Image is bigger than 500KB',
+    
+    // The setting up of the dropzone
+    init:function() {
+
+        this.on("removedfile", function(file) {
+
+            $.ajax({
+                type: 'POST',
+                url: 'core/filerm.php',
+                data: { id: file.name },
+                dataType: 'html',
+                success: function(data){
+                    var rep = JSON.parse(data);
+                    console.log(rep);
+                }
+            });
+
+        });
+    },
+    error: function(file, response) {
+        if($.type(response) === "string")
+            var message = response; //dropzone sends it's own error messages in string
+        else
+            var message = response.message;
+        file.previewElement.classList.add("dz-error");
+        _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            node = _ref[_i];
+            _results.push(node.textContent = message);
+        }
+        return _results;
+    },
+    success: function(file,done) {
+        var rep = JSON.parse(done);
+        console.log(rep);
+    }
+};
+
+$(function() {
+    
 /*** Nav Bar actions: ***/
 (function($, window, document){
     var slide_speed = "fast";
