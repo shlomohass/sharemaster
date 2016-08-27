@@ -9,27 +9,24 @@
 class Api extends Basic {
         
     //Vars General For Games
-    private $err_letter = "E";
-    private $suc_letter = "S";
+    private $err_letter = "code";
+    private $suc_letter = "code";
     private $code_spacer = ":";
     private $err_codes = array(
-        "general"       => "01",
-        "not-secure"    => "02",
-        "bad-who"       => "03",
-        "query"         => "04",
-        "empty-results" => "05",
-        "results-false" => "06",
-        "not-loged"     => "07",
-        "not-legal"     => "08",
-        "no-plan"       => "09",
-        "dir-create"    => "10",
-        "session"       => "11",
-        "no-sess-dir"   => "12",
-        "bad-connection" => "13"
+        "general"       => "101",
+        "not-secure"    => "102",
+        "bad-who"       => "103",
+        "query"         => "104",
+        "empty-results" => "105",
+        "results-false" => "106",
+        "not-loged"     => "107",
+        "not-legal"     => "108",
+        "no-file"       => "109",
+        "copy-file"     => "110",
     );
     private $suc_codes = array(
-        "general"       => "01",
-        "with-results"  => "02"
+        "general"       => "201",
+        "with-results"  => "202"
     );
 
     /** Constructor
@@ -47,12 +44,11 @@ class Api extends Basic {
      * @param array|bool $results
      * @return array : not empty or false.
      */
-    public function response($success,$results) {
+    public function response($success, $results = false) {
         if (is_array($results) && !empty($results)) {
-            $this->success($success,false);
-            echo json_encode($results);
+            $this->success($success, $results, true);
         } else {
-            $this->success($success);
+            $this->success($success, array(), true); 
         }
     }
     /** Output defined error codes:
@@ -64,14 +60,14 @@ class Api extends Basic {
     public function error($type = 'general', $die = true) {
         if (!isset($this->err_codes[$type])) {  $type = 'general'; }
         if (!is_bool($die)) { $die = true; }
+        $err = array(
+            "code" => $this->err_codes[$type],
+            "mes"  => $type
+        );
         if ($die) {
-            die(
-                $this->err_letter.
-                $this->code_spacer.
-                $this->err_codes[$type]
-            );
+            die(json_encode($err));
         } else {
-            echo $this->err_letter.$this->code_spacer.$this->err_codes[$type];
+            echo json_encode($err);
         }
     }
     /** Output defined success codes:
@@ -80,17 +76,18 @@ class Api extends Basic {
      *  @param bool $die : dye or echo
      *  
      */
-    public function success($type, $die = true) {
+    public function success($type, $result, $die = true) {
         if (!isset($this->suc_codes[$type])) {  $type = 'general'; }
         if (!is_bool($die)) { $die = true; }
+        $res = array(
+            "code" => $this->suc_codes[$type],
+            "mes"  => $type,
+            "results" => $result
+        );
         if ($die) {
-            die(
-                $this->suc_letter.
-                $this->code_spacer.
-                $this->suc_codes[$type]
-            );
+            die(json_encode($res));
         } else {
-            echo $this->suc_letter.$this->code_spacer.$this->suc_codes[$type];
+            echo json_encode($res);
         } 
     }
         

@@ -79,7 +79,8 @@ switch ($Page->target) {
             
             //Include more classes:
             include_once PATH_CLASSES."Api.class.php";
-
+            include_once PATH_CLASSES."Operation.class.php";
+            
             //Load Api:
             include_once PATH_PAGES."api.php";
             
@@ -94,11 +95,10 @@ switch ($Page->target) {
     default:
         Trace::add_step(__FILE__,"Load page home");
         if ($User->user_loged) {
-            $Page->template = "pages/style-home.css";
-            include_once PATH_CLASSES."Extract.class.php";
+            $Page->template = "style-home.css";
             include_once PATH_PAGES."home.php";
         } else {
-            $Page->template = "pages/style-login.css";
+            $Page->template = "style-login.css";
             include_once PATH_PAGES."login.php";
         }
 }

@@ -8,6 +8,7 @@ date_default_timezone_set('Asia/Jerusalem');
 /**************************** set gloable path hooks **************************/
 
 define('DS', DIRECTORY_SEPARATOR);
+define( 'PATH_BASE',            "gits".DS."sharemaster".DS."sharemaster".DS );
 define( 'PATH_CLASSES',         "classes".DS );
 define( 'PATH_LANG',            "lang".DS );
 define( 'PATH_PAGES',           "pages".DS   );
@@ -20,11 +21,12 @@ define( 'GPATH_LIB_JS',         "lib/js/"  );
 /************************** System Configuration ******************************/
 
 $conf = array(
-    'host'      => '127.0.0.1',
-    'port'      => '3306',
-    'dbname'    => 'dbsharemaster',
-    'dbuser'    => 'usersharemaster',
-    'dbpass'    => 'sh4hs1hs1'
+    'host'           => '127.0.0.1',
+    'port'           => '3306',
+    'dbname'         => 'dbsharemaster',
+    'dbuser'         => 'usersharemaster',
+    'dbpass'         => 'sh4hs1hs1',
+    'storage_folder' => 'storage'
 );
 
 define( 'SEND_DB_ERRORS',   false );
@@ -45,7 +47,7 @@ $conf['general'] = array(
     "app_version"       => '0.1',
     "fav_url"           => "/lib/css/fav/",
     "img_path"           => "/lib/images/",
-    "site_base_url"     => "/",
+    "site_base_url"     => "",
 );
 
 /************************** User account Configuration ************************/

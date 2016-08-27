@@ -17,7 +17,6 @@
         } else {
             $result["mes"] = "Success PHP: ".$targetFile;
         }
-        
     }
 
     echo json_encode($result);
