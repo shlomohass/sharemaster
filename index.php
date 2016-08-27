@@ -18,6 +18,8 @@ Trace::add_step(__FILE__,"Create DB object");
 $Page = new Page( $conf );
 $User = new User( $conf );
 
+//var_dump($User->user_loged);
+
 /************************* Load User Pref Lang ********************************/
 
 Trace::add_step(__FILE__, "Load Language Dictionary");
@@ -90,17 +92,21 @@ switch ($Page->target) {
             die("E:01");
         }
     break;
-        
-    case "home":
-    default:
-        Trace::add_step(__FILE__,"Load page home");
+    case "admin":
+        Trace::add_step(__FILE__,"Load admin page");
         if ($User->user_loged) {
-            $Page->template = "style-home.css";
-            include_once PATH_PAGES."home.php";
+            $Page->template = "style-admin.css";
+            include_once PATH_PAGES."admin.php";
         } else {
             $Page->template = "style-login.css";
             include_once PATH_PAGES."login.php";
         }
+    break;
+    case "home":
+    default:
+        Trace::add_step(__FILE__,"Load page home");
+        $Page->template = "style-home.css";
+        include_once PATH_PAGES."home.php";
 }
 
 /**************************** Debuger Expose **********************************/
