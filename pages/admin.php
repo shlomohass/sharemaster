@@ -13,17 +13,19 @@ Trace::add_step(__FILE__,"Define css libs for head section");
 $Page->include_css(array(
     GPATH_LIB_STYLE."font-awesome.min.css",
     GPATH_LIB_STYLE."bootstrap.min.css",
-    GPATH_LIB_STYLE."dropzone.css"
+    GPATH_LIB_STYLE."dropzone.css",
+    GPATH_LIB_STYLE."datatables/dataTables.bootstrap.min.css"
 ));
     
 
 /********************* Set additional head JS import ********************/
 Trace::add_step(__FILE__,"Define js libs for head section");
 $Page->include_js(array(
-    GPATH_LIB_JS."jquery-1.12.3.min.js"
+    GPATH_LIB_JS."jquery-1.12.3.min.js",
+    GPATH_LIB_JS."bootstrap.min.js",
+    GPATH_LIB_JS."datatables/jquery.dataTables.min.js",
+    GPATH_LIB_JS."datatables/dataTables.bootstrap.min.js",
 ));
-
-
 
 /****************************** Include JS Lang hooks ***********************************/
 Trace::add_step(__FILE__,"Load page js lang hooks");
@@ -52,7 +54,6 @@ $Page->variable("load-view", (!empty($_view) && ($_view === "dash" || $_view ===
 /***************  Set additional end body JS import and Conditional JS  *******************/
 Trace::add_step(__FILE__,"Define conditional js libs for end body section");
 $Page->include_js(array(
-    GPATH_LIB_JS."bootstrap.min.js",
     GPATH_LIB_JS."dropzone.js",
     GPATH_LIB_JS."app.js"
 ), false);

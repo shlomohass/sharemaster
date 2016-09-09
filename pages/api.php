@@ -27,7 +27,6 @@ if ( $inputs['type'] !== '' ) {
                 "tempFile" => (isset($_FILES['file']) && isset($_FILES['file']['tmp_name'])) ? $_FILES['file']['tmp_name'] : false,
                 "targetFile" => (isset($_FILES['file']) && isset($_FILES['file']['name'])) ? $_FILES['file']['name'] : false
             );
-            //$get = $Api->Func->synth($_POST, array('dis_images','dis_css','ena_debugger','ena_outfile','ena_grout','ena_stamp','out_folder','timeout','loading_timeout','server','use_encoding','crawler_type','plan_name'),false);
             
             //Validation:
             if (
@@ -53,6 +52,71 @@ if ( $inputs['type'] !== '' ) {
             }
         break;
         
+        case "tableuser":
+            $get = $Api->Func->synth($_REQUEST, array('draw','columns','order','start','length','search'),false);
+            $get["order"] = (isset($_REQUEST["order"]) && is_array($_REQUEST["order"]))?$_REQUEST["order"]:"";
+            $get["search"] = (isset($_REQUEST["search"]) && is_array($_REQUEST["search"]))?$_REQUEST["search"]:"";
+            $columns = array( 
+                // datatable column index  => database column name
+                0 => 'username', 
+                1 => 'seen',
+                2 => 'created',
+                3 => 'last_seen',
+                4 => 'email'
+            );
+            
+            if (empty($get['order'])) {
+                $get['order'] = array(
+                    array( "column" => 0, "dir" => "asc")
+                );
+            }
+            $totalData = $Api::$conn->num_rows("SELECT * FROM `users`");
+            $totalFiltered = $totalData;
+            $where = false;
+            if( !empty($get['search']['value']) ) {
+               $where = array();
+               foreach($columns as $col) {
+                   $where[] = "`".$col."` LIKE '".$Api::$conn->filter($get['search']['value'])."%' ";
+               }
+               $where = implode("OR ", $where);
+            }
+            $data = $Api::$conn->select(
+                    'users', 
+                    " `username`,`seen`,`created`,`last_seen`,`email` ",
+                    $where,
+                    false,
+                    array(
+                        $get['order'][0]['dir'],
+                        array($columns[$get['order'][0]['column']])
+                    ),
+                    array(
+                        $get['start'],
+                        $get['length']
+                    )
+                );
+            $final_data = array();
+            if (is_array($data)) {
+                foreach ($data as $key => $duser) {
+                    $final_data[] = array(
+                        $duser['username'],
+                        $duser['seen'],
+                        $duser['created'],
+                        $duser['last_seen'],
+                        $duser['email']
+                    );
+                }
+            } else {
+                //Error:
+            }
+            $results = array(
+                "draw"            => intval( $get['draw'] ), 
+                "recordsTotal"    => intval( $totalData ),  // total number of records
+                "recordsFiltered" => intval( $totalFiltered ), // total number of records after searching, if there is no searching then totalFiltered = totalData
+                "data"            => $final_data   // total data array
+			);
+            echo json_encode($results); 
+            die();
+        break;
         //Unknown type - error:
         default : 
             $Api->error("bad-who");
